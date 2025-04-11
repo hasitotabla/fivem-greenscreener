@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Bundler",
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowJs": true,
+    "checkJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "verbatimModuleSyntax": true,
+    "typeRoots": ["./node_modules/@types", "./types", "../shared/types"],
+    "paths": { "$/*": ["../*"], "@shared/*": ["../shared/src/*"], "@shared": ["../shared/src"] }
+  },
+  "include": ["./src/**/*.ts", "./types/**/*.d.ts", "../shared/src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

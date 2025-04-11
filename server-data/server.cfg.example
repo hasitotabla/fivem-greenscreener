@@ -1,0 +1,25 @@
+endpoint_add_tcp "0.0.0.0:30120"
+endpoint_add_udp "0.0.0.0:30120"
+
+sv_licenseKey "YOUR_LICENSE_KEY"
+
+sv_hostname "pursuit.mp"
+load_server_icon logo.jpg
+sets tags "nem"
+sets locale "hu-HU"
+sets sv_projectName "pursuit.mp"
+sets sv_projectDesc "pursuit.mp"
+
+# Hide from masterlist
+sv_masterlist ""
+sv_master1 ""
+
+sv_maxclients 8
+sv_scriptHookAllowed 0
+set onesync on
+
+## https://docs.fivem.net/docs/server-manual/server-commands/#sv_enforcegamebuild-build
+set sv_enforceGameBuild 3407
+
+add_ace group.admin command allow
+add_ace group.admin command.quit deny

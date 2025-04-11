@@ -1,0 +1,19 @@
+{
+  "name": "@greenscreener/server",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "optional": "^0.1.4"
+  },
+  "devDependencies": {
+    "@citizenfx/server": "2.0.13079-1",
+    "@swc/core": "^1.11.5",
+    "@types/node": "^22.13.8",
+    "fastify": "^5.2.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
+  }
+}

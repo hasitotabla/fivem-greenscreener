@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM"],
+    "module": "ES6",
+    "target": "ES6",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Bundler",
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowJs": true,
+    "checkJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "verbatimModuleSyntax": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "paths": {
+      "$/*": ["../*"],
+      "@shared/*": ["../shared/src/*"],
+      "@shared": ["../shared/src"]
+    }
+  },
+  "include": ["./src/**/*.ts", "./types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

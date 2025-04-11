@@ -1,0 +1,10 @@
+node_modules
+.server
+.cache
+
+server-data/cache
+server-data/.replxx_history
+server-data/server.cfg
+
+screenshots/input
+screenshots/output
