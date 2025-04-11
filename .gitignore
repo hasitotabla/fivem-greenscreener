@@ -6,5 +6,8 @@ server-data/cache
 server-data/.replxx_history
 server-data/server.cfg
 
+server-data/resources/core/client/dist
+server-data/resources/core/server/dist
+
 screenshots/input
 screenshots/output
