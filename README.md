@@ -23,7 +23,8 @@ bun run start
 After joining the server, you should be able to run these commands **_IN THE SERVER CONSOLE_**
 
 ```
-/screenshot vehicle [all / model1,model2,model3,...]
+/screenshot vehicle/ped/weapon [all / model1,model2,model3,...]
 ```
 
 There's a few values you could tweak in `server-data/resources/core/config.json`
+Also, if you need to greenscreen stuff that's recently came out, update `server-data/resources/core/gamedata.json`. (Scrape together Durty's data dump or idk, have fun.)
