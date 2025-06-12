@@ -5,6 +5,7 @@
     "build": "tsup",
     "dev": "tsup --watch"
   },
+  "dependencies": {},
   "devDependencies": {
     "@citizenfx/client": "2.0.13079-1",
     "@citizenfx/server": "2.0.13079-1",

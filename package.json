@@ -5,16 +5,21 @@
   "scripts": {
     "server": "./.server/FXServer.exe +set txDataPath ../server-data",
     "server:update": "bun run scripts/Update.ts",
-    "build": "bun run build:client && bun run build:server && bun run build:webview",
-    "build:game": "bun run build:client && bun run build:server",
+    "server:restart": "curl -X POST http://localhost:30120/hmr/restartResources -H \"Content-Type: application/json\" -d '{\"resources\":[\"core\"]}'",
+    "build": "bun run build:client && bun run build:server && bun run build:webview && bun run server:restart",
+    "dev": "concurrently \"bun run dev:client\" \"bun run dev:server\" \"bun run dev:webview\"",
     "build:client": "cd server-data/resources/core/client && pnpm run build",
+    "dev:client": "cd server-data/resources/core/client && pnpm run dev",
     "build:server": "cd server-data/resources/core/server && pnpm run build",
-    "build:webview": "cd server-data/resources/core/webview && pnpm run build"
+    "dev:server": "cd server-data/resources/core/server && pnpm run dev",
+    "build:webview": "cd server-data/resources/core/webview && pnpm run build",
+    "dev:webview": "cd server-data/resources/core/webview && pnpm run dev"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "axios": "^1.8.1",
     "cheerio": "^1.0.0",
+    "concurrently": "^9.1.2",
     "node-7z": "^3.0.0",
     "ora": "^8.2.0"
   },

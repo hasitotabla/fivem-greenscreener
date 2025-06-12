@@ -5,7 +5,7 @@ from multiprocessing import Pool
 import argparse
 
 MAX_DISTANCE = 130
-GREENSCREEN_COLOR = (137, 245, 12)
+GREENSCREEN_COLOR = (142, 248, 7)
 PADDING = 10
 MIN_BBOX_SIZE = 50  
 USED_THREADS = 12

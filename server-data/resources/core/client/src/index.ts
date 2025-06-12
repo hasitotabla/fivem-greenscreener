@@ -1,17 +1,22 @@
 import "@citizenfx/client";
 
 import config from "$/config.json";
-import type { ScreenshotFactories, INetEventData } from "@shared/index";
+import { type ScreenshotFactoryKeys, type ScreenshotFactory, type INetEventData, waitFor } from "@shared/index";
 // import type { INetEventData } from "@shared/types/NetEvents";
 
 import { onServer } from "./helpers/NetEvents";
 import { VehicleScreenshotFactory } from "./services/screenshot/Vehicle";
 import { spawnPlayer } from "./helpers/Player";
+import { PedScreenshotFactory } from "./services/screenshot/Ped";
+import { WeaponScreenshotFactory } from "./services/screenshot/Weapon";
 
-const ScreenshotFactories: Record<ScreenshotFactories, typeof VehicleScreenshotFactory> = {
+const ScreenshotFactories: Record<ScreenshotFactoryKeys, ScreenshotFactory> = {
   vehicle: VehicleScreenshotFactory,
-  object: VehicleScreenshotFactory,
-  cloth: VehicleScreenshotFactory,
+  ped: PedScreenshotFactory,
+  weapon: WeaponScreenshotFactory,
+
+  // object: VehicleScreenshotFactory,
+  // cloth: VehicleScreenshotFactory,
 };
 
 new (class {
@@ -50,7 +55,7 @@ new (class {
 
     DisplayRadar(false);
 
-    this.currentFactory = new factory(data as any);
+    this.currentFactory = new (factory as any)(data as any);
   }
 
   onFinished() {
@@ -77,9 +82,39 @@ RegisterCommand(
     const code = args.join(" ");
     try {
       const result = eval(code);
+      console.log("Command executed successfully:", result);
     } catch (e) {
       console.error(e);
     }
+  },
+  false
+);
+
+RegisterCommand(
+  "setmodel",
+  async (_source: number, args: string[]) => {
+    const [model] = args;
+    if (!model) {
+      console.error("No model specified.");
+      return;
+    }
+
+    const hash = parseInt(model) || GetHashKey(model);
+    if (!IsModelValid(hash)) {
+      console.error(`Invalid model: ${model}`);
+      return;
+    }
+
+    RequestModel(hash);
+
+    await waitFor(() => HasModelLoaded(hash), 10000);
+    if (!HasModelLoaded(hash)) {
+      console.error(`Model ${model} failed to load.`);
+      return;
+    }
+
+    SetPlayerModel(PlayerId(), hash);
+    SetModelAsNoLongerNeeded(hash);
   },
   false
 );

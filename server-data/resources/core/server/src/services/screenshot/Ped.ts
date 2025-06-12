@@ -1,4 +1,4 @@
-import { wait, type VehicleProcessData } from "@shared/index";
+import { wait } from "@shared/index";
 
 import gameData from "../../../../gamedata.json";
 
@@ -9,13 +9,13 @@ import { GameEventProvider } from "../events/GameEvents";
 import { WebEventProvider } from "../events/WebEvents";
 import { emitClient, getProcessingPlayer } from "../../helpers/Player";
 import { BaseScreenshotService } from "./_Base";
+import type { PedProcessData } from "$/shared/src/types/screenshot/Ped";
 
-export class VehicleScreenshotService extends BaseScreenshotService {
+export class PedScreenshotService extends BaseScreenshotService {
   private _isProcessing: boolean = false;
   private eventService: EventsService;
-  private dataToProcess: VehicleProcessData = {
+  private dataToProcess: PedProcessData = {
     model: "all",
-    colors: { primary: 0, secondary: 0 },
   };
 
   public get isProcessing(): boolean {
@@ -23,7 +23,7 @@ export class VehicleScreenshotService extends BaseScreenshotService {
   }
 
   constructor() {
-    super("vehicle");
+    super("ped");
   }
 
   public async process(): Promise<void> {
@@ -45,16 +45,11 @@ export class VehicleScreenshotService extends BaseScreenshotService {
   }
 
   public parseCommandData(data: string[]): CommandParseResult {
-    const [model, primaryColor, secondaryColor] = data;
+    const [model] = data;
 
     if (model && model !== "all") {
       this.dataToProcess.model = model.split(",");
     }
-
-    this.dataToProcess.colors = {
-      primary: parseInt(primaryColor ?? "0"),
-      secondary: parseInt(secondaryColor ?? "0"),
-    };
 
     return { success: true };
   }
@@ -66,7 +61,7 @@ export class VehicleScreenshotService extends BaseScreenshotService {
   private processIndex = 0;
   private waitForResult: ReturnType<typeof Promise.withResolvers> | null = null;
 
-  private vehicleModelsToProcess: string[];
+  private pedModelsToProcess: string[];
   private currentModel: string;
 
   private async startProcessing() {
@@ -81,14 +76,14 @@ export class VehicleScreenshotService extends BaseScreenshotService {
     }
 
     emitClient("Screenshot::Setup", player, {
-      type: "vehicle",
+      type: "ped",
       data: {},
     });
 
-    this.vehicleModelsToProcess = typeof this.dataToProcess.model === "string" ? gameData.vehicles : this.dataToProcess.model;
+    this.pedModelsToProcess = typeof this.dataToProcess.model === "string" ? gameData.peds : this.dataToProcess.model;
 
-    for (const vehicleModel of this.vehicleModelsToProcess) {
-      await this.processVehicle(vehicleModel, player);
+    for (const pedModel of this.pedModelsToProcess) {
+      await this.processPed(pedModel, player);
       this.processIndex++;
     }
 
@@ -97,31 +92,30 @@ export class VehicleScreenshotService extends BaseScreenshotService {
     this.cleanup();
   }
 
-  private async processVehicle(model: string, withPlayer: string) {
+  private async processPed(model: string, withPlayer: string) {
     if (GetPlayerEndpoint(withPlayer) === null) {
       console.log("Player disconnected. Stopping process...");
       return;
     }
 
     this.waitForResult = Promise.withResolvers();
-
     this.currentModel = model;
 
-    emitClient("Screenshot::Process", withPlayer, {
-      model,
-      colors: this.dataToProcess.colors,
-    });
+    emitClient("Screenshot::Process", withPlayer, { model });
 
     await this.waitForResult.promise;
   }
 
   private async onSkip(data: Events["skip"], source: EventSource): Promise<void> {
-    console.log(`Skipping vehicle...`);
     this.waitForResult?.resolve(true);
   }
 
   private async onProcessEnded(data: Events["processComplete"], source: EventSource): Promise<void> {
-    this.saveImageUrlToFile(this.currentModel, data.imageData);
+    console.log(
+      `Ped screenshot for model ${this.currentModel} processed successfully. (${this.processIndex + 1} / ${this.pedModelsToProcess.length})`
+    );
+
+    await this.saveImageUrlToFile(this.currentModel, data.imageData);
     this.waitForResult?.resolve(true);
   }
 }

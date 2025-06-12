@@ -16,21 +16,6 @@ import {
 import type { ScreenshotRequest } from "./Types";
 import { SCREENSHOT_FRAGMENT_SHADER, SCREENSHOT_VERTEX_SHADER } from "./Data";
 
-function dataURItoBlob(dataURI: string) {
-  const byteString = atob(dataURI.split(",")[1]);
-  const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-
-  const blob = new Blob([ab], { type: mimeString });
-  return blob;
-}
-
 export const ScreenshotManager = () => {
   let renderer: any;
   let rtTexture: any;
@@ -102,13 +87,11 @@ export const ScreenshotManager = () => {
     const read = new Uint8Array(window.innerWidth * window.innerHeight * 4);
     renderer.readRenderTargetPixels(rtTexture, 0, 0, window.innerWidth, window.innerHeight, read);
 
-    // create a temporary canvas to compress the image
     const canvas = document.createElement("canvas");
     canvas.style.display = "inline";
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // draw the image on the canvas
     const d = new Uint8ClampedArray(read.buffer);
 
     const ctx = canvas.getContext("2d");
@@ -119,7 +102,6 @@ export const ScreenshotManager = () => {
     ctx.putImageData(new ImageData(d, window.innerWidth, window.innerHeight), 0, 0);
 
     const imageUrl = canvas.toDataURL(req.encoding, req.quality ?? 0.92);
-    // req.onFinished(dataURItoBlob(imageUrl).toString());
     req.onFinished(imageUrl);
   };
 

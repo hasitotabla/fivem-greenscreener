@@ -1,24 +1,28 @@
 import "@citizenfx/server";
 
-import path from "path";
-
-import { wait } from "@shared/index";
+import { wait, type ScreenshotFactory, type ScreenshotFactoryKeys } from "@shared/index";
 
 import config from "../../config.json";
-import { VehicleScreenshotService } from "./services/screenshot/Vehicle";
 
-const factories = {
+import { VehicleScreenshotService } from "./services/screenshot/Vehicle";
+import { PedScreenshotService } from "./services/screenshot/Ped";
+import { WeaponScreenshotService } from "./services/screenshot/Weapon";
+import type { ScreenshotServices } from "./types/Services";
+
+const factories: Record<ScreenshotFactoryKeys, new () => ScreenshotServices> = {
   vehicle: VehicleScreenshotService,
+  ped: PedScreenshotService,
+  weapon: WeaponScreenshotService,
 };
 
 class Application {
-  private currentFactory: VehicleScreenshotService | null = null;
+  private currentFactory: ScreenshotServices | null = null;
 
   constructor() {
     RegisterCommand(config.command, this.handleCommand.bind(this), false);
   }
 
-  private handleCommand(source: number, args: string[]): void {
+  private async handleCommand(source: number, args: string[]) {
     if (this.currentFactory) {
       if (this.currentFactory?.isProcessing) {
         console.log("Factory already in use! Please wait for the current process to finish.");
@@ -37,11 +41,15 @@ class Application {
 
     const factoryService = factories[factoryName as keyof typeof factories];
     if (!factoryService) {
-      console.log(`Could find factory for ${factoryName}!`);
+      console.log(`Couldn't find factory for ${factoryName}!`);
       return;
     }
 
     this.currentFactory = new factoryService();
+    if (!this.currentFactory) {
+      console.log(`Failed to create factory for ${factoryName}!`);
+      return;
+    }
 
     const result = this.currentFactory.parseCommandData(rest);
     if (!result.success) {
@@ -49,7 +57,7 @@ class Application {
       return;
     }
 
-    this.currentFactory.process();
+    await this.currentFactory.process();
   }
 }
 
